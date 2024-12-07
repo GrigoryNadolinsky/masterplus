@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Подтверждение удаления заявки</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Подтверждение удаления заявки</h1>
+        <p>Вы уверены, что хотите удалить заявку "{{ request.description }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</body>
+</html>

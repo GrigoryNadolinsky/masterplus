@@ -1,0 +1,4 @@
+<option value="" disabled selected hidden>Выберите вид ремонта</option>
+{% for repair_type in repair_types %}
+<option value="{{ repair_type.id }}">{{ repair_type.name }}</option>
+{% endfor %}

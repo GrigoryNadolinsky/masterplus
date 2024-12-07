@@ -1,0 +1,266 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма заявки</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7-beta.17/jquery.inputmask.min.js"></script>
+    <style>
+        .error-glow {
+            box-shadow: 0 0 5px red;
+        }
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .alert {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Форма заявки</h1>
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" novalidate id="requestForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_category">Категория</label>
+                {{ form.category }}
+                <input type="hidden" id="hidden_category" name="category" value="{{ form.category.value }}">
+                {% if form.category.errors %}
+                    <div class="invalid-feedback d-block">{{ form.category.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_last_name">Фамилия</label>
+                {{ form.last_name|add_class:"form-control" }}
+                {% if form.last_name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_first_name">Имя</label>
+                {{ form.first_name|add_class:"form-control" }}
+                {% if form.first_name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_middle_name">Отчество</label>
+                {{ form.middle_name|add_class:"form-control" }}
+                <div class="form-check mt-2">
+                    {{ form.no_middle_name|add_class:"form-check-input" }}
+                    <label class="form-check-label" for="id_no_middle_name">Нет отчества</label>
+                </div>
+                {% if form.middle_name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.middle_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_contact_phone">Контактный телефон</label>
+                {{ form.contact_phone|add_class:"form-control" }}
+                {% if form.contact_phone.errors %}
+                    <div class="invalid-feedback d-block">{{ form.contact_phone.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_street">Улица</label>
+                <select id="id_street" name="street" class="form-control" required>
+                    <option value="" disabled selected hidden></option>
+                    {% for street in form.fields.street.queryset %}
+                    <option value="{{ street.id }}" {% if form.instance.street and street.id == form.instance.street.id %}selected{% endif %}>{{ street.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.street.errors %}
+                    <div class="invalid-feedback d-block">{{ form.street.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_building">Здание</label>
+                {{ form.building|add_class:"form-control" }}
+                {% if form.building.errors %}
+                    <div class="invalid-feedback d-block">{{ form.building.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_room">Помещение</label>
+                {{ form.room|add_class:"form-control" }}
+                {% if form.room.errors %}
+                    <div class="invalid-feedback d-block">{{ form.room.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Адрес электронной почты</label>
+                {{ form.email|add_class:"form-control" }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_primary_repair_type">Вид ремонта</label>
+                <select id="id_primary_repair_type" name="primary_repair_type" class="form-control" required>
+                    <option value="" disabled selected hidden>Выберите вид ремонта</option>
+                </select>
+                {% if form.primary_repair_type.errors %}
+                    <div class="invalid-feedback d-block">{{ form.primary_repair_type.errors }}</div>
+                {% endif %}
+                <select id="id_secondary_repair_type" name="secondary_repair_type" class="form-control mt-2" disabled>
+                </select>
+                {% if form.secondary_repair_type.errors %}
+                    <div class="invalid-feedback d-block">{{ form.secondary_repair_type.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_short_description">Краткое описание проблемы</label>
+                {{ form.short_description|add_class:"form-control" }}
+                {% if form.short_description.errors %}
+                    <div class="invalid-feedback d-block">{{ form.short_description.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_description">Описание проблемы</label>
+                {{ form.description|add_class:"form-control" }}
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">
+                    {% if form.instance.pk %}
+                        Сохранить
+                    {% else %}
+                        Отправить
+                    {% endif %}
+                </button>
+                <a href="{% if form.instance.pk %}{% url 'dashboard' %}{% else %}{% url 'index' %}{% endif %}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $("#id_contact_phone").inputmask("+7 (999) 999-99-99");
+
+            function updateRepairTypeOptions(category, initial) {
+                $.ajax({
+                    url: '{% url "ajax_load_repair_types" %}',
+                    data: {
+                        'category': category
+                    },
+                    success: function (data) {
+                        $("#id_primary_repair_type").html('<option value="" disabled selected hidden>Выберите вид ремонта</option>' + data);
+                        if (initial) {
+                            $("#id_primary_repair_type").val(initial).change();
+                        } else {
+                            $("#id_secondary_repair_type").html('').prop('disabled', true);
+                        }
+                    }
+                });
+            }
+
+            function updateRepairDetailOptions(repair_type_id, initial) {
+                $.ajax({
+                    url: '{% url "ajax_load_repair_details" %}',
+                    data: {
+                        'repair_type_id': repair_type_id
+                    },
+                    success: function (data) {
+                        if (data.trim() === '') {
+                            $("#id_secondary_repair_type").html('').prop('disabled', true).prop('required', false);
+                        } else {
+                            $("#id_secondary_repair_type").html('<option value="" disabled selected hidden>Выберите подробности ремонта</option>' + data).prop('disabled', false).prop('required', true);
+                            if (initial) {
+                                $("#id_secondary_repair_type").val(initial);
+                            }
+                        }
+                    }
+                });
+            }
+
+            var initialCategory = $("#id_category").val();
+            var initialPrimaryRepairType = "{{ form.instance.primary_repair_type.id }}";
+            var initialSecondaryRepairType = "{{ form.instance.secondary_repair_type.id }}";
+
+            if (initialCategory) {
+                updateRepairTypeOptions(initialCategory, initialPrimaryRepairType);
+            }
+
+            $("#id_category").change(function () {
+                var category = $(this).val();
+                $("#hidden_category").val(category);
+                updateRepairTypeOptions(category);
+                $("#id_secondary_repair_type").html('').prop('disabled', true).prop('required', false);
+            });
+
+            $("#id_primary_repair_type").change(function () {
+                var repair_type_id = $(this).val();
+                updateRepairDetailOptions(repair_type_id, initialSecondaryRepairType);
+            });
+
+            // Initial load for editing existing form
+            if ($("#id_primary_repair_type").val()) {
+                updateRepairDetailOptions($("#id_primary_repair_type").val(), initialSecondaryRepairType);
+            }
+
+            // Toggle middle name field
+            function toggleMiddleNameField() {
+                if ($('#id_no_middle_name').is(':checked')) {
+                    $('#id_middle_name').prop('disabled', true).val('').removeClass('error-glow');
+                } else {
+                    $('#id_middle_name').prop('disabled', false);
+                }
+            }
+
+            $('#id_no_middle_name').change(function() {
+                toggleMiddleNameField();
+            });
+
+            toggleMiddleNameField();  // Ensure correct state on page load
+
+            // Highlight fields with errors on form submit
+            $('#requestForm').on('submit', function() {
+                var isValid = true;
+                var middleNameField = $('#id_middle_name');
+                var noMiddleNameChecked = $('#id_no_middle_name').is(':checked');
+
+                // Проверка для поля отчества
+                if (!middleNameField.val() && !noMiddleNameChecked) {
+                    middleNameField.addClass('error-glow');
+                    isValid = false;
+                } else {
+                    middleNameField.removeClass('error-glow');
+                }
+
+                // Общая проверка для всех обязательных полей
+                $(this).find(':input[required]').each(function() {
+                    if (!this.value) {
+                        $(this).addClass('error-glow');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('error-glow');
+                    }
+                });
+
+                if (!isValid) {
+                    $('#errorMessage').remove();
+                    $('<div id="errorMessage" class="alert alert-error mt-3">Не все обязательные поля заполнены!</div>').insertAfter('h1');
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+                return isValid;
+            });
+
+            // Remove highlight on input change
+            $(this).find(':input').on('input', function() {
+                if (this.value) {
+                    $(this).removeClass('error-glow');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

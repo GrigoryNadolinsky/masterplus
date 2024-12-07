@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .login-container {
+            max-width: 500px;
+            margin: 0 auto;
+            margin-top: 100px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="text-center">Авторизация</h1>
+
+        <!-- Отображение сообщений -->
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Форма авторизации -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Имя пользователя</label>
+                <input type="text" class="form-control" name="username" id="id_username" value="{{ form.username.value|default:'' }}">
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {{ form.username.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Пароль</label>
+                <input type="password" class="form-control" name="password" id="id_password" value="{{ form.password.value|default:'' }}">
+                {% if form.password.errors %}
+                    <div class="text-danger">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+
+        <!-- Ссылка на регистрацию -->
+        <div class="text-center mt-3">
+            Еще нет аккаунта? <a href="{% url 'register' %}">Регистрация</a>
+        </div>
+    </div>
+</body>
+</html>

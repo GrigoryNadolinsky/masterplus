@@ -1,0 +1,97 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7-beta.17/jquery.inputmask.min.js"></script>
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            margin-top: 100px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1 class="text-center">Регистрация</h1>
+        {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Имя пользователя</label>
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_first_name">Имя</label>
+                {{ form.first_name|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_last_name">Фамилия</label>
+                {{ form.last_name|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_middle_name">Отчество</label>
+                {{ form.middle_name|add_class:"form-control" }}
+                <div class="form-check mt-2">
+                    {{ form.no_middle_name|add_class:"form-check-input" }}
+                    <label class="form-check-label" for="id_no_middle_name">Нет отчества</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_phone_number">Номер телефона</label>
+                {{ form.phone_number|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Электронная почта</label>
+                {{ form.email|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_password1">Пароль</label>
+                {{ form.password1|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Подтверждение пароля</label>
+                {{ form.password2|add_class:"form-control" }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Регистрация</button>
+        </form>
+        <div class="text-center mt-3">
+            Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('#id_phone_number').inputmask("+7 (999) 999-99-99");
+        });
+        $(document).ready(function() {
+    function toggleMiddleNameField() {
+        if ($('#id_no_middle_name').is(':checked')) {
+            $('#id_middle_name').prop('disabled', true).val('');
+        } else {
+            $('#id_middle_name').prop('disabled', false);
+        }
+    }
+
+    $('#id_no_middle_name').change(function() {
+        toggleMiddleNameField();
+    });
+
+    toggleMiddleNameField();  // Ensure correct state on page load
+});
+    </script>
+</body>
+</html>
