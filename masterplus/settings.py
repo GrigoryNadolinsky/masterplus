@@ -99,11 +99,11 @@ LOGIN_URL = '/login/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'masterplus1',
-        'USER': 'myuser',
-        'PASSWORD': 'parol12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': '*',
+        'USER': '*',
+        'PASSWORD': '*',
+        'HOST': '*',
+        'PORT': '*',
     }
 }
 MESSAGE_TAGS = {
